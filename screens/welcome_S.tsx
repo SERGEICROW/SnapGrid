@@ -2,12 +2,12 @@ import {Button, Image, Pressable, StyleSheet, Text, TouchableHighlight, Touchabl
 import tailwind from "tailwind-rn";
 
 export default function Welcome_S() {
-    return (
+    return <>
         <View style={tailwind('h-full mt-9 flex flex-row justify-center items-center justify-around')}>
 
             <TouchableOpacity
                 style={styles.containers}
-                onPress={()=>console.log("pressed log/sign")}
+                onPress={() => console.log("pressed log/sign")}
             >
                 <Image
                     source={require('../assets/testIcon.png')}
@@ -20,7 +20,7 @@ export default function Welcome_S() {
 
             <TouchableOpacity
                 style={styles.containers}
-                onPress={()=>console.log("pressed Quick Start")}
+                onPress={() => console.log("pressed Quick Start")}
             >
                 <Image
                     source={require('../assets/testIcon.png')}
@@ -30,7 +30,7 @@ export default function Welcome_S() {
 
             </TouchableOpacity>
         </View>
-    );
+    </>
 };
 
 //STYLES\\
@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10,
-        flex:1,
+        flex: 1,
     },
 });
