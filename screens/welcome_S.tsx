@@ -1,4 +1,4 @@
-import {Button, Image, Pressable, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import tailwind from "tailwind-rn";
 
 export default function Welcome_S() {
@@ -27,8 +27,8 @@ export default function Welcome_S() {
                     style={imageStyle}
                 />
                 <Text style={textStyle}>Quick start</Text>
-
             </TouchableOpacity>
+
         </View>
     </>
 };
