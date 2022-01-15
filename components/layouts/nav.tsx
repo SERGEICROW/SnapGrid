@@ -1,4 +1,4 @@
-import {Alert, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import tailwind from "tailwind-rn";
 import AdIcons from "react-native-vector-icons/AntDesign";
 import FaIcons from "react-native-vector-icons/FontAwesome";
@@ -51,7 +51,7 @@ export default function Nav({children}: { children: any }) {
 
 //Tailwind Styled variables
 const nav = tailwind('flex-row items-center h-16');
-const container = tailwind('h-full mt-9');
+const container = tailwind('h-full pt-9');
 const logo = tailwind('w-14 h-14 mx-3');
 const menuOptions = tailwind('text-4xl text-gray-500 m-5 bottom-3');
 

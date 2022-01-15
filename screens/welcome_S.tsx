@@ -1,7 +1,10 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import tailwind from "tailwind-rn";
+import {Component} from "react";
 
-export default function Welcome_S() {
+
+
+export default function Welcome_S({navigation}:{navigation:any}) {
     return <>
         <View style={tailwind('h-full mt-9 flex flex-row justify-center items-center justify-around')}>
 
@@ -20,7 +23,7 @@ export default function Welcome_S() {
 
             <TouchableOpacity
                 style={styles.containers}
-                onPress={() => console.log("pressed Quick Start")}
+                onPress={()=>navigation.navigate('Main')}
             >
                 <Image
                     source={require('../assets/testIcon.png')}
