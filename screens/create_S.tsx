@@ -1,175 +1,71 @@
-import {
-    Button, Modal,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from "react-native";
-import React, {useState} from "react";
+import React, {Component, useState} from "react";
+import {View, Text, TextInput, Button, Keyboard} from "react-native";
 import tailwind from "tailwind-rn";
-import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import FaIcons from "react-native-vector-icons/FontAwesome";
+import {RenderCheckbox, MyButton} from "../components/templateComponents";
 
-
+//MAIN FUNCTION\\
 export default function Create_S() {
-    //Modal useState
-    const [modalVisible, setModalVisible] = useState(false);
 
-    //Component useState
-    const [component, setComponent] = useState();
-    const [items, setItems] = useState([]);
-
-
-    const handleAdd = ()=> {
-        setItems([...items, component])
-        console.log("ADDED")
+//TEMPLATE DATA SET SECTION-------------------------------------------------------
+    //HOOKS
+    const [title, setTitle] = useState(String);
+    const [name, setName] = useState(String);
+    const [data, setData] = useState(Array);
+    //VARIABLES & OBJECTS
+    //Main Parent template model, there is only one when created.
+    const template = {title: title, DATA: data as []};
+    //Child component model, can be more than one, and each one is added to DATA array.
+    const component = new Object({type: 'checkbox', subtitle: name, value: Boolean})
+    //FUNCTIONS
+    const addComponent = () => {
+        setData([...data, component])
+        setName('');
+        render()
     }
 
-    const eraseComponent = (index) => {
-        let itemsCopy = [...items];
-        itemsCopy.splice(index, 1);
-        setItems(itemsCopy)
+//COMPONENT RENDERING SECTION ------------------------------------------------
+    //HOOKS
+    const [rendArray, setRendArray] = useState(Array);
+
+    const array = data as any
+    const render = () => {
+        for (let i = 0; i < array.length; i += 1) {
+            if (array[i].type === 'checkbox'){
+                const x = array[i].subtitle
+                setRendArray([...rendArray, x])
+            }
+        }
     }
 
+//DATA MANAGE SECTION---------------------------------------------------------
+    const handleMerge = () => {
+        if (title !== '') {
+            template.title = title
+        } else {
+            alert('Template title missing')
+        }
+    }
 
-
-    const CheckBox = () => {
-        return (
-            <View style={tailwind('flex-row items-center px-1')}>
-                {checkbox}
-                <TextInput
-                    style={tailwind('text-2xl text-pink-600')}
-                    placeholder={'Title: E.g. "Negotiable price"'}/>
-            </View>
-        )
-    };
-
-    const Description = () => {
-        return (
-            <View style={tailwind('flex-row items-center')}>
-                <View style={tailwind('items-center px-2')}>
-
-                    <TextInput
-                        style={tailwind('text-2xl items-center w-full text-pink-600')}
-                        placeholder={'Title: E.g. "Color"'}
-                    />
-                    <View style={tailwind('w-full h-9 bg-gray-300 border border-gray-400')}/>
-                </View>
-            </View>
-        )
-    };
-
-
-    return <>
-
-        <Modal
-            animationType={"fade"} transparent={true} visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-        >
-            <View style={styles.modalScreen}>
-                <View style={styles.modal}>
-                    <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                        {close_icon}
-                    </Pressable>
-                    {/*Add CheckBox*/}
-                    <TouchableOpacity
-                        style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                        onPress={() => { // @ts-ignore
-                            setComponent(CheckBox);
-                            handleAdd();
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        {checkBox_icon}
-                        <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
-                    </TouchableOpacity>
-                    {/*Add Description*/}
-                    <TouchableOpacity
-                        style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                        onPress={() => { // @ts-ignore
-                            setComponent(Description);
-                            handleAdd();
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        {description}
-                        <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add Description</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-
-        <SafeAreaView style={tailwind('border border-red-400 h-full ')}>
-            <View style={tailwind('flex-row items-center border-b border-gray-400 p-2')}>
-                <Text>Template Title:</Text>
-                <TextInput
-                    style={tailwind('h-10 border border-gray-300')}
-                    placeholder={' E.g. "Cars", "Cellphones"'}
-                />
-            </View>
-            {/*Map array components*/}
+    return (
+        <View>
+            <TextInput placeholder={'TEMPLATE TITLE'} style={tailwind('border-b h-10')}
+                       onChangeText={(value) => setTitle(value)}/>
             {
-                items.map((item, index)=>{
+                rendArray.map((item, index)=>{
                     return (
-                        <TouchableOpacity key={index} onPress={()=> eraseComponent(index)}>
-                            {item}
-                        </TouchableOpacity>
+                        <RenderCheckbox text={item}/>
                     )
                 })
             }
-            {/*Add button*/}
-            <View style={tailwind('items-center w-full py-4')}>
-                <View style={tailwind('w-3/6')}>
-                    <Button title={"+"} color={'#ff005f'}
-                            onPress={() => setModalVisible(true)}
-                    />
-                </View>
+            <TextInput style={tailwind('border border-green-500 h-10')}
+                       value={name}
+                       onChangeText={(input) => setName(input)}/>
+            <Button title={"Add component"} onPress={() => addComponent()}/>
+            {/*<Button title={"SAVE"} onPress={()=>addComponent2()}/>*/}
+            <MyButton title={"helps"} onPress={() => {console.log(JSON.stringify(rendArray))}}/>
 
-            </View>
-            <TouchableOpacity
-                style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                onPress={() => { // @ts-ignore
-                    setComponent(CheckBox);
-                    handleAdd();
-                }}
-            >
-                {checkBox_icon}
-                <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
-            </TouchableOpacity>
-        </SafeAreaView>
-    </>
+        </View>
+    )
+
 };
 
-//STYLES\\
-
-//Tailwind Styled variables
-
-
-//Js Styles
-const styles = StyleSheet.create({
-    modalScreen: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    },
-    modal: {
-        width: '90%',
-        backgroundColor: 'white',
-        borderRadius: 15
-    },
-    closeIcon: {
-        fontSize: 50,
-        color: '#ff005f',
-    }
-});
-
-//Icons
-
-const checkbox = <McIcons name={'checkbox-blank-outline'} style={tailwind('text-gray-500 text-3xl')}/>
-const description = <McIcons name={'card-text-outline'} style={[styles.closeIcon]}/>
-const close_icon = <FaIcons name={'window-close'} style={[styles.closeIcon, tailwind('text-right bottom-1')]}/>
-const checkBox_icon = <McIcons name={'checkbox-multiple-marked-outline'} style={[styles.closeIcon]}/>

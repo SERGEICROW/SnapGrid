@@ -1,5 +1,6 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Text, TextInput, TouchableOpacity, View} from "react-native";
+import tailwind from "tailwind-rn";
 
 export default function Examples() {
 
@@ -81,3 +82,30 @@ export default function Examples() {
         </View>
     </>
 };
+
+//TEMPLATE SCRIPSTS
+
+const CheckBox = () => {
+    return (
+        <View style={tailwind('flex-row items-center px-1')}>
+            {checkbox}
+            <TextInput
+                style={tailwind('text-2xl text-pink-600')}
+                placeholder={'Title: E.g. "Negotiable price"'}
+            />
+        </View>
+    )
+};
+
+{/*Add CheckBox*/}
+<TouchableOpacity
+    style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
+    onPress={() => { // @ts-ignore
+        setModalVisible(!modalVisible)
+        // @ts-ignore
+        setItems([...items, CheckBox()])
+    }}
+>
+    {checkBox_icon}
+    <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
+</TouchableOpacity>
