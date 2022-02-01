@@ -1,45 +1,52 @@
-import {Modal, TouchableOpacity, View, Pressable, StyleSheet, Text} from "react-native";
+import {Modal, TouchableOpacity, View, Pressable, StyleSheet, Text, TextInput} from "react-native";
 import tailwind from "tailwind-rn";
-import {useState} from "react";
 import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FaIcons from "react-native-vector-icons/FontAwesome";
 
-export const AddComponentModal = (props:any) => {
-
-    //Modal useState
-    const [modalVisible, setModalVisible] = useState(false);
+export const AddComponentModal = (props: any) => {
+//DATA SECTION------------------------------------------------------------------------------------------------------
+    //HOOKS
 
     return (
         <Modal
-            animationType={"fade"} transparent={true} visible={props.mvisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
+            animationType={"fade"} transparent={true} visible={props.modalVisible}
+            onRequestClose={() => props.setModalVisible(!props.modalVisible)}
         >
             <View style={styles.modalScreen}>
                 <View style={styles.modal}>
-                    <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                    <Pressable onPress={() => props.setModalVisible(!props.modalVisible)}>
                         {close_icon}
                     </Pressable>
                     {/*Add CheckBox*/}
+                    <TextInput style={tailwind('m-2  flex-row items-center px-2 py-1 border border-gray-400 rounded-md text-3xl')}
+                               placeholder={'Checkbox Title:'}
+                               value={props.name}
+                               maxLength={14}
+                               onChangeText={(input) => props.setName(input)}
+                    />
                     <TouchableOpacity
                         style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
                         onPress={() => {
-
-                            setModalVisible(!modalVisible);
+                            props.addComponent()
+                            props.setModalVisible(!props.modalVisible)
                         }}
                     >
                         {checkBox_icon}
                         <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
                     </TouchableOpacity>
+
+
+
                     {/*Add Description*/}
-                    <TouchableOpacity
-                        style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                        onPress={() => { // @ts-ignore
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        {description}
-                        <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add Description</Text>
-                    </TouchableOpacity>
+                    {/*<TouchableOpacity*/}
+                    {/*    style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}*/}
+                    {/*    onPress={() => { // @ts-ignore*/}
+                    {/*        props.setModalVisible(!props.modalVisible);*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    {description}*/}
+                    {/*    <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add Description</Text>*/}
+                    {/*</TouchableOpacity>*/}
                 </View>
             </View>
         </Modal>
@@ -66,7 +73,6 @@ const styles = StyleSheet.create({
 });
 
 //Icons
-
-const description = <McIcons name={'card-text-outline'} style={[styles.closeIcon]}/>
+// const description = <McIcons name={'card-text-outline'} style={[styles.closeIcon]}/>
 const close_icon = <FaIcons name={'window-close'} style={[styles.closeIcon, tailwind('text-right bottom-1')]}/>
 const checkBox_icon = <McIcons name={'checkbox-multiple-marked-outline'} style={[styles.closeIcon]}/>

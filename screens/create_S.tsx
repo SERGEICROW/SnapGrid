@@ -1,13 +1,14 @@
-import React, {Component, useEffect, useState} from "react";
-import {View, Text, TextInput, Button, Keyboard} from "react-native";
+import React, {useState} from "react";
+import {View, TextInput,Text, Button, TouchableOpacity, StyleSheet} from "react-native";
 import tailwind from "tailwind-rn";
 import {RenderCheckbox, MyButton} from "../components/templateComponents";
 import {AddComponentModal} from "../components/modals";
+import FaIcons from "react-native-vector-icons/FontAwesome";
 
 //MAIN FUNCTION\\
 export default function Create_S() {
 
-//TEMPLATE DATA SECTION-----------------------------------------------------------------------
+//TEMPLATE DATA SECTION-------------------------------------------------------------------------------
     //HOOKS
     const [title, setTitle] = useState(String);
     const [name, setName] = useState(String);
@@ -19,16 +20,26 @@ export default function Create_S() {
     const component = new Object({type: 'checkbox', subtitle: name, value: Boolean});
 
 
-//COMPONENT RENDERING SECTION -------------------------------------------------------------------
+//COMPONENT RENDERING SECTION ------------------------------------------------------------------------
     //HOOKS
         //Modal
-    const [mvisible, setVisible] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false);
+
     //FUNCTIONS
     const addComponent = () => {
-        setData([...data, component])
-        setName('')
+        try {
+            if (name !== '') {
+                setData([...data, component])
+                setName('')
+            } else {
+                alert('Checkbox needs a title')
+            }
+        } catch (e) {
+            alert('Something went wrong when adding a checkbox')
+        }
     };
-    const deleteComponent = (index) => {
+
+    const deleteComponent = ({index}: { index: any}) => {
         let itemsCopy = [...data];
         itemsCopy.splice(index, 1);
         setData(itemsCopy)
@@ -39,37 +50,76 @@ export default function Create_S() {
         if (title !== '') {
             template.title = title
         } else {
-            alert('Template title missing')
+            alert('Template title is missing')
         }
     }
-
+//RETURN\\
     return (
-        <View>
-            <TextInput placeholder={'TEMPLATE TITLE'} style={tailwind('border-b h-10')}
+        <View style={styles.container}>
+            {/*TITLE INPUT*/}
+            <TextInput placeholder={'Template Title:'} style={styles.templateTitle}
                        onChangeText={(value) => setTitle(value)}/>
+            {/*DATA MAPPING*/}
             {
                 data.map((value, index) => {
                     return (
-                        <View style={tailwind('flex-row')}>
+                        <View style={tailwind('flex-row justify-between')}>
                             <RenderCheckbox text={value.subtitle} index={index}/>
-                            <Button title={`borrar:  ${value.subtitle}`} onPress={()=>deleteComponent(index)}/>
+                            <TouchableOpacity onPress={()=>deleteComponent({index: index})}>
+                                {close_icon}
+                            </TouchableOpacity>
                         </View>
                     )
                 })
             }
-            <TextInput style={tailwind('border border-green-500 h-10')}
-                       value={name}
-                       onChangeText={(input) => setName(input)}/>
-            <Button title={"Add component"} onPress={() => addComponent()}/>
-            {/*<Button title={"SAVE"} onPress={()=>addComponent2()}/>*/}
-            <MyButton title={"helps"} onPress={() => {
-                console.log(data)
-            }}/>
-            <Button title={"+"} color={'#ff005f'}
-                    onPress={() => setVisible(true)}
+            {/*ADD COMPONENT*/}
+            <TouchableOpacity style={styles.addButton} onPress={()=>setModalVisible(true)}>
+                <Text style={tailwind('text-4xl text-white')}>+</Text>
+            </TouchableOpacity>
+            {/*<MyButton title={"helps"} onPress={() => {*/}
+            {/*    console.log(data)*/}
+            {/*}}/>*/}
+            {/*MODAL COMPONENT*/}
+            <AddComponentModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                name={name}
+                setName={setName}
+                addComponent={addComponent}
             />
-            <AddComponentModal pk/>
 
         </View>
     )
 };
+
+//Js Styles
+const styles = StyleSheet.create({
+    container:{
+        height:'100%',
+        borderWidth:1,
+        borderColor:'#ff005f'
+    },
+    templateTitle:{
+        height:50,
+        marginLeft:2,
+        fontSize:40,
+        color:'#ff005f'
+    },
+    closeIcon: {
+        fontSize: 50,
+        color: '#ff005f',
+        marginRight:5
+    },
+    addButton:{
+        marginLeft:'30%',
+        marginTop:10,
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:17,
+        width:'40%',
+        height:50,
+        backgroundColor:'#ff005f'
+    }
+});
+//Icons
+const close_icon = <FaIcons name={'window-close'} style={styles.closeIcon}/>
