@@ -1,12 +1,18 @@
+//React
 import React, {useState} from "react";
-import {View, TextInput,Text, Button, TouchableOpacity, StyleSheet} from "react-native";
+//React Native
+import {View, TextInput, Text, TouchableOpacity, StyleSheet} from "react-native";
+//Libaries
 import tailwind from "tailwind-rn";
-import {RenderCheckbox, MyButton} from "../components/templateComponents";
-import {AddComponentModal} from "../components/modals";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FaIcons from "react-native-vector-icons/FontAwesome";
+//Components
+import {RenderCheckbox} from "../components/templateComponents";
+import {AddComponentModal} from "../components/AddComponentModal";
+
 
 //MAIN FUNCTION\\
-export default function Create_S() {
+export default function Create_S({navigation}:{navigation:any}) {
 
 //TEMPLATE DATA SECTION-------------------------------------------------------------------------------
     //HOOKS
@@ -19,10 +25,9 @@ export default function Create_S() {
     //Child component model Object, can be more than one, and each one is added to DATA array.
     const component = new Object({type: 'checkbox', subtitle: name, value: Boolean});
 
-
 //COMPONENT RENDERING SECTION ------------------------------------------------------------------------
     //HOOKS
-        //Modal
+    //Modal
     const [modalVisible, setModalVisible] = useState(false);
 
     //FUNCTIONS
@@ -39,20 +44,46 @@ export default function Create_S() {
         }
     };
 
-    const deleteComponent = ({index}: { index: any}) => {
+    const deleteComponent = ({index}: { index: any }) => {
         let itemsCopy = [...data];
         itemsCopy.splice(index, 1);
         setData(itemsCopy)
     };
 
-//FINAL DATA MANAGE SECTION----------------------------------------------------------------------------
-    const handleMerge = () => {
-        if (title !== '') {
-            template.title = title
-        } else {
-            alert('Template title is missing')
+//DATA STORAGE SECTION----------------------------------------------------------------------------
+    //Set data API
+    const setObjectValue = async (value: String) => {
+        let keys = []
+        try {
+            const jsonValue = JSON.stringify(value)
+            keys = await AsyncStorage.getAllKeys();
+            await AsyncStorage.setItem(keys.length.toString(), jsonValue)
+        } catch (e) {
+            alert("Set error")
+        }
+        console.log('Done.')
+    }
+    //Saves the data and closes screen
+    const saveData = () => {
+        try {
+            if (title !== '') {
+                template.title = title
+            } else {
+                alert('Template title is missing')
+            }
+            if (data.length === 0) {
+                alert("Template is empty")
+            }
+        } catch (e) {
+            alert("Save error")
+        } finally {
+            navigation.navigate('Main')
+            setObjectValue(template);
+            alert('Template saved')
         }
     }
+
+
 //RETURN\\
     return (
         <View style={styles.container}>
@@ -64,8 +95,9 @@ export default function Create_S() {
                 data.map((value, index) => {
                     return (
                         <View style={tailwind('flex-row justify-between')}>
+                            {/*// @ts-ignore*/}
                             <RenderCheckbox text={value.subtitle} index={index}/>
-                            <TouchableOpacity onPress={()=>deleteComponent({index: index})}>
+                            <TouchableOpacity onPress={() => deleteComponent({index: index})}>
                                 {close_icon}
                             </TouchableOpacity>
                         </View>
@@ -73,13 +105,17 @@ export default function Create_S() {
                 })
             }
             {/*ADD COMPONENT*/}
-            <TouchableOpacity style={styles.addButton} onPress={()=>setModalVisible(true)}>
-                <Text style={tailwind('text-4xl text-white')}>+</Text>
-            </TouchableOpacity>
-            {/*<MyButton title={"helps"} onPress={() => {*/}
-            {/*    console.log(data)*/}
-            {/*}}/>*/}
-            {/*MODAL COMPONENT*/}
+            <View>
+                <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+                    <Text style={tailwind('text-4xl text-white')}>+</Text>
+                </TouchableOpacity>
+                {/*SAVE*/}
+                <TouchableOpacity style={styles.saveButton} onPress={() => saveData()}>
+                    <Text style={tailwind('text-4xl text-white')}>SAVE</Text>
+                </TouchableOpacity>
+            </View>
+
+            {/*MODAL*/}
             <AddComponentModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
@@ -94,31 +130,40 @@ export default function Create_S() {
 
 //Js Styles
 const styles = StyleSheet.create({
-    container:{
-        height:'100%',
-        borderWidth:1,
-        borderColor:'#ff005f'
+    container: {
+        height: '100%',
+        justifyContent: 'space-between'
     },
-    templateTitle:{
-        height:50,
-        marginLeft:2,
-        fontSize:40,
-        color:'#ff005f'
+    templateTitle: {
+        height: 60,
+        marginLeft: 2,
+        fontSize: 40,
+        color: '#ff005f'
     },
     closeIcon: {
         fontSize: 50,
         color: '#ff005f',
-        marginRight:5
+        marginRight: 5
     },
-    addButton:{
-        marginLeft:'30%',
-        marginTop:10,
-        alignItems:'center',
-        justifyContent:'center',
-        borderRadius:17,
-        width:'40%',
-        height:50,
-        backgroundColor:'#ff005f'
+    addButton: {
+        marginLeft: '30%',
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 17,
+        width: '40%',
+        height: 50,
+        backgroundColor: '#ff005f'
+    },
+    saveButton: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopRightRadius: 17,
+        width: '30%',
+        height: 50,
+        color: '#ff005f',
+        backgroundColor: 'black'
     }
 });
 //Icons
