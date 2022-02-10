@@ -78,6 +78,7 @@ export default function Create_S({navigation}:{navigation:any}) {
             alert("Save error")
         } finally {
             navigation.navigate('Main')
+            // @ts-ignore
             setObjectValue(template);
             alert('Template saved')
         }

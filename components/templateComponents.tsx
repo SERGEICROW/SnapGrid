@@ -1,8 +1,9 @@
-import {View, Text, Button, StyleSheet} from "react-native";
+import {View, Text, Button, StyleSheet, TouchableOpacity} from "react-native";
 import React from "react";
 import tailwind from "tailwind-rn";
 import IIcons from "react-native-vector-icons/Ionicons";
 import FIcons from "react-native-vector-icons/Foundation";
+import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export const RenderCheckbox = (props: any) => {
     return (
@@ -26,11 +27,27 @@ export const RenderQuestion = (props: any) => {
                 <Text style={styles.input}>{props.text}</Text>
             </View>
             <View>
-                {questionIcon}
+                {checkboxIcon}
             </View>
         </View>
     )
 };
+
+export const TemplateTitle = (props: any)=> {
+    return (
+        <TouchableOpacity style={styles.container} {...props}>
+            <View>
+                <View style={tailwind('flex-row')}>
+                    <Text style={styles.number}>{props.index + 1}</Text>
+                    <Text style={styles.input}>{props.text}</Text>
+                </View>
+            </View>
+            <View>
+                {templateIcon}
+            </View>
+        </TouchableOpacity>
+    )
+}
 
 //JS STYLES
 const styles = StyleSheet.create({
@@ -61,3 +78,4 @@ const styles = StyleSheet.create({
 //ICONS
 const checkboxIcon = <IIcons name={'checkbox'} style={styles.icon}/>
 const questionIcon = <FIcons name={'question-circle'} style={styles.icon}/>
+const templateIcon = <McIcons name={'clipboard-file-outline'} style={styles.icon}/>

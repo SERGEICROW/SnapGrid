@@ -1,5 +1,4 @@
-//MAIN FUNCTION\\
-import {BackHandler, Button, Modal, StyleSheet, Text, View} from "react-native";
+import {BackHandler, Button, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {TemplateListModal} from "../components/TemplateListModal";
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,58 +6,70 @@ import FaIcons from "react-native-vector-icons/FontAwesome";
 import tailwind from "tailwind-rn";
 import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FIcons from "react-native-vector-icons/Foundation";
+import {RenderCheckbox, TemplateTitle} from "../components/templateComponents";
 
+//MAIN FUNCTION\\
 export default function Compare_S() {
+//TEMPLATE DATA SECTION-------------------------------------------------------------------------------
+    //HOOKS
+    const [data, setData] = useState(Array)
+    const [template, setTemplate] = useState(Object)
+
+    //FUNCTIONS
+    const getList = async () => {
+        const key = await AsyncStorage.getAllKeys()
+        const data = []
+        for (let i in key) {
+            const templateValue = await AsyncStorage.getItem(i)
+            templateValue != null ? JSON.parse(templateValue) : null
+            let obj = JSON.parse(templateValue)
+            data.push(obj)
+        }
+        setData(data)
+    }
+
+
+//TEMPLATE RENDER SECTION-----------------------------------------------------------------------------
+    //HOOKS
     const [modalVisible, setModalVisible] = useState(true);
-    const data = {"title":"DOS","DATA":[{"type":"checkbox","subtitle":"aa"}]}
-
-    const [keys, setKeys] = useState([])
-    /*const [data, setData] = useState()*/
-
-    const getAllKeys = async () => {
-        let key = []
-        try {
-            key = await AsyncStorage.getAllKeys()
-            setKeys([...keys, key])
-        } catch(e) {
-            // read key error
-        }
-        console.log(keys)
-    }
-
-    const getMyObject = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem("1")
-            jsonValue != null ? JSON.parse(jsonValue) : null
-            const obj = JSON.parse(jsonValue)
-           console.log(obj.title)
-        } catch(e) {
-            // read error
-        }
-        console.log('Done.')
-
-    }
-
-
-
 
 //RETURN\\
     return (
-        <Modal
-            animationType={"fade"} transparent={true} visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-        >
-            <View style={styles.modalScreen}>
-                <View style={styles.modal}>
-                    <Button title={'buton'} onPress={getAllKeys}/>
-                    <Button title={'buton'} onPress={getMyObject}/>
-                    {
+        <View>
+            {/*MODAL TO SELECT TEMPLATE*/}
+            <Modal
+                animationType={"fade"} transparent={true} visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+                onShow={() => getList()}
+            >
+                <View style={styles.modalScreen}>
+                    <View style={styles.modal}>
+                        {
+                            data.length > 0 ? data.map((value, index) => {
+                                return (
+                                    <View style={tailwind('flex-row justify-between p-2 ml-5')}>
+                                        <TemplateTitle
+                                            text={value.title} index={index}
+                                            onPress={()=> {
+                                                setModalVisible(false)
+                                                setTemplate(data[index])
+                                            }}
+                                        />
+                                    </View>
+                                )
+                            }) : <Text>Empty list, create a template before</Text>
+                        }
 
-                    }
-                    <Text>------------------------------------------------------</Text>
+
+                    </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
+
+            {/*TEMPLATE NAME DISPLAY AND ADD COMPARISONS*/}
+            {
+                <Text>{template.title}</Text>
+            }
+        </View>
     )
 };
 //Js Styles
