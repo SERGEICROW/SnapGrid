@@ -6,7 +6,7 @@ import FaIcons from "react-native-vector-icons/FontAwesome";
 import tailwind from "tailwind-rn";
 import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FIcons from "react-native-vector-icons/Foundation";
-import {RenderCheckbox, TemplateTitle} from "../components/templateComponents";
+import {RenderCheckbox, TemplateTitle} from "../components/TemplateComponents";
 
 //MAIN FUNCTION\\
 export default function Compare_S() {
@@ -14,6 +14,9 @@ export default function Compare_S() {
     //HOOKS
     const [data, setData] = useState(Array)
     const [template, setTemplate] = useState(Object)
+    const [comparisons, setComparisons] = useState(Array)
+    //VARIABLES & OBJECTS
+    const comparison = new Object({title: template.title, DATA:comparisons as []})
 
     //FUNCTIONS
     const getList = async () => {
@@ -22,11 +25,18 @@ export default function Compare_S() {
         for (let i in key) {
             const templateValue = await AsyncStorage.getItem(i)
             templateValue != null ? JSON.parse(templateValue) : null
+            // @ts-ignore
             let obj = JSON.parse(templateValue)
             data.push(obj)
         }
         setData(data)
     }
+
+    const addComparison = () =>{
+
+    }
+
+
 
 
 //TEMPLATE RENDER SECTION-----------------------------------------------------------------------------
@@ -45,7 +55,7 @@ export default function Compare_S() {
                 <View style={styles.modalScreen}>
                     <View style={styles.modal}>
                         {
-                            data.length > 0 ? data.map((value, index) => {
+                            data.length > 0 ? data.map((value : any, index) => {
                                 return (
                                     <View style={tailwind('flex-row justify-between p-2 ml-5')}>
                                         <TemplateTitle
@@ -66,9 +76,18 @@ export default function Compare_S() {
             </Modal>
 
             {/*TEMPLATE NAME DISPLAY AND ADD COMPARISONS*/}
-            {
+
                 <Text>{template.title}</Text>
-            }
+            {/*{*/}
+            {/*    template.DATA != null ? template.DATA.map((value, index)=>{*/}
+            {/*        return (*/}
+            {/*            <Text>{value.subtitle}</Text>*/}
+            {/*        )*/}
+            {/*    }) : null*/}
+            {/*}*/}
+            <Button title={'CONSOLE'} onPress={()=>console.log(template.DATA[1])}/>
+            <Button title={'ADD to compare'} onPress={console.log}/>
+
         </View>
     )
 };

@@ -7,7 +7,7 @@ import tailwind from "tailwind-rn";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FaIcons from "react-native-vector-icons/FontAwesome";
 //Components
-import {RenderCheckbox} from "../components/templateComponents";
+import {RenderCheckbox} from "../components/TemplateComponents";
 import {AddComponentModal} from "../components/AddComponentModal";
 
 
