@@ -66,21 +66,17 @@ export default function Create_S({navigation}:{navigation:any}) {
     //Saves the data and closes screen
     const saveData = () => {
         try {
-            if (title !== '') {
+            if (title !== '' && data.length !== 0)  {
                 template.title = title
+                navigation.navigate('Main')
+                // @ts-ignore
+                setObjectValue(template);
+                alert('Template saved')
             } else {
-                alert('Template title is missing')
-            }
-            if (data.length === 0) {
-                alert("Template is empty")
+                alert('Template is missing title or at least 1 component')
             }
         } catch (e) {
             alert("Save error")
-        } finally {
-            navigation.navigate('Main')
-            // @ts-ignore
-            setObjectValue(template);
-            alert('Template saved')
         }
     }
 

@@ -14,9 +14,7 @@ export default function Compare_S() {
     //HOOKS
     const [data, setData] = useState(Array)
     const [template, setTemplate] = useState(Object)
-    const [comparisons, setComparisons] = useState(Array)
     //VARIABLES & OBJECTS
-    const comparison = new Object({title: template.title, DATA:comparisons as []})
 
     //FUNCTIONS
     const getList = async () => {
@@ -32,9 +30,61 @@ export default function Compare_S() {
         setData(data)
     }
 
-    const addComparison = () =>{
-
+    const setInitialDatabase = async () => {
+        const keys = await AsyncStorage.getAllKeys()
+        let cont = false
+        for (let i in keys) {
+            if (keys[i] === "UserComparisonData") {
+                cont = true
+                console.log('USER DATA ALREADY')
+                break
+            }
+        }
+        if (!cont) {
+            const jsonValue = JSON.stringify({DATA2: []})
+            await AsyncStorage.setItem('UserComparisonData', jsonValue)
+            console.log('USER DATA CREATED')
+        }
     }
+
+
+    const setObjectValue = async () => {
+        try {
+            const jsonValue = JSON.stringify({DATA2: ['HOLA SOY LA DATAA']})
+            await AsyncStorage.setItem('UserComparisonData', jsonValue)
+        } catch(e) {
+            // save error
+        }
+
+        console.log('Done.')
+    }
+
+
+
+    const clearAll = async () => {
+        try {
+            await AsyncStorage.clear()
+        } catch(e) {
+            // clear error
+        }
+
+        console.log('Done.')
+    }
+
+    const getAllKeys = async () => {
+            let keys = []
+            try {
+                keys = await AsyncStorage.getAllKeys()
+            } catch(e) {
+                // read key error
+            }
+
+            console.log(keys)
+            // example console.log result:
+            // ['@MyApp_user', '@MyApp_key']
+        }
+
+
 
 
 
@@ -50,7 +100,9 @@ export default function Compare_S() {
             <Modal
                 animationType={"fade"} transparent={true} visible={modalVisible}
                 onRequestClose={() => setModalVisible(!modalVisible)}
-                onShow={() => getList()}
+                onShow={()=> {
+                    getList().then(()=> console.log(data));
+                }}
             >
                 <View style={styles.modalScreen}>
                     <View style={styles.modal}>
@@ -77,16 +129,9 @@ export default function Compare_S() {
 
             {/*TEMPLATE NAME DISPLAY AND ADD COMPARISONS*/}
 
-                <Text>{template.title}</Text>
-            {/*{*/}
-            {/*    template.DATA != null ? template.DATA.map((value, index)=>{*/}
-            {/*        return (*/}
-            {/*            <Text>{value.subtitle}</Text>*/}
-            {/*        )*/}
-            {/*    }) : null*/}
-            {/*}*/}
-            <Button title={'CONSOLE'} onPress={()=>console.log(template.DATA[1])}/>
-            <Button title={'ADD to compare'} onPress={console.log}/>
+            <Text>{template.title}</Text>
+            <Button title={'CONSOLE'} onPress={()=>setObjectValue()}/>
+            <Button title={'ADD to compare'} onPress={()=>console.log(data)}/>
 
         </View>
     )
