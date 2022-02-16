@@ -1,175 +1,167 @@
-import {
-    Button, Modal,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from "react-native";
+//React
 import React, {useState} from "react";
+//React Native
+import {View, TextInput, Text, TouchableOpacity, StyleSheet} from "react-native";
+//Libaries
 import tailwind from "tailwind-rn";
-import McIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FaIcons from "react-native-vector-icons/FontAwesome";
+//Components
+import {RenderCheckbox} from "../components/TemplateComponents";
+import {AddComponentModal} from "../components/AddComponentModal";
 
 
-export default function Create_S() {
-    //Modal useState
+//MAIN FUNCTION\\
+export default function Create_S({navigation}:{navigation:any}) {
+
+//TEMPLATE DATA SECTION-------------------------------------------------------------------------------
+    //HOOKS
+    const [title, setTitle] = useState(String);
+    const [name, setName] = useState(String);
+    const [data, setData] = useState(Array);
+    //VARIABLES & OBJECTS
+    //Main Parent template model Object, there is only one when created.
+    const template = {title: title, DATA: data as []};
+    //Child component model Object, can be more than one, and each one is added to DATA array.
+    const component = new Object({type: 'checkbox', subtitle: name, value: Boolean});
+
+//COMPONENT RENDERING SECTION ------------------------------------------------------------------------
+    //HOOKS
+    //Modal
     const [modalVisible, setModalVisible] = useState(false);
 
-    //Component useState
-    const [component, setComponent] = useState();
-    const [items, setItems] = useState([]);
+    //FUNCTIONS
+    const addComponent = () => {
+        try {
+            if (name !== '') {
+                setData([...data, component])
+                setName('')
+            } else {
+                alert('Checkbox needs a title')
+            }
+        } catch (e) {
+            alert('Something went wrong when adding a checkbox')
+        }
+    };
 
-
-    const handleAdd = ()=> {
-        setItems([...items, component])
-        console.log("ADDED")
-    }
-
-    const eraseComponent = (index) => {
-        let itemsCopy = [...items];
+    const deleteComponent = ({index}: { index: any }) => {
+        let itemsCopy = [...data];
         itemsCopy.splice(index, 1);
-        setItems(itemsCopy)
+        setData(itemsCopy)
+    };
+
+//DATA STORAGE SECTION----------------------------------------------------------------------------
+    //Set data API
+    const setObjectValue = async (value: String) => {
+        let keys = []
+        try {
+            const jsonValue = JSON.stringify(value)
+            keys = await AsyncStorage.getAllKeys();
+            await AsyncStorage.setItem(keys.length.toString(), jsonValue)
+        } catch (e) {
+            alert("Set error")
+        }
+        console.log('Done.')
+    }
+    //Saves the data and closes screen
+    const saveData = () => {
+        try {
+            if (title !== '' && data.length !== 0)  {
+                template.title = title
+                navigation.navigate('Main')
+                // @ts-ignore
+                setObjectValue(template);
+                alert('Template saved')
+            } else {
+                alert('Template is missing title or at least 1 component')
+            }
+        } catch (e) {
+            alert("Save error")
+        }
     }
 
 
-
-    const CheckBox = () => {
-        return (
-            <View style={tailwind('flex-row items-center px-1')}>
-                {checkbox}
-                <TextInput
-                    style={tailwind('text-2xl text-pink-600')}
-                    placeholder={'Title: E.g. "Negotiable price"'}/>
-            </View>
-        )
-    };
-
-    const Description = () => {
-        return (
-            <View style={tailwind('flex-row items-center')}>
-                <View style={tailwind('items-center px-2')}>
-
-                    <TextInput
-                        style={tailwind('text-2xl items-center w-full text-pink-600')}
-                        placeholder={'Title: E.g. "Color"'}
-                    />
-                    <View style={tailwind('w-full h-9 bg-gray-300 border border-gray-400')}/>
-                </View>
-            </View>
-        )
-    };
-
-
-    return <>
-
-        <Modal
-            animationType={"fade"} transparent={true} visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-        >
-            <View style={styles.modalScreen}>
-                <View style={styles.modal}>
-                    <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                        {close_icon}
-                    </Pressable>
-                    {/*Add CheckBox*/}
-                    <TouchableOpacity
-                        style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                        onPress={() => { // @ts-ignore
-                            setComponent(CheckBox);
-                            handleAdd();
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        {checkBox_icon}
-                        <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
-                    </TouchableOpacity>
-                    {/*Add Description*/}
-                    <TouchableOpacity
-                        style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                        onPress={() => { // @ts-ignore
-                            setComponent(Description);
-                            handleAdd();
-                            setModalVisible(!modalVisible);
-                        }}
-                    >
-                        {description}
-                        <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add Description</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-
-        <SafeAreaView style={tailwind('border border-red-400 h-full ')}>
-            <View style={tailwind('flex-row items-center border-b border-gray-400 p-2')}>
-                <Text>Template Title:</Text>
-                <TextInput
-                    style={tailwind('h-10 border border-gray-300')}
-                    placeholder={' E.g. "Cars", "Cellphones"'}
-                />
-            </View>
-            {/*Map array components*/}
+//RETURN\\
+    return (
+        <View style={styles.container}>
+            {/*TITLE INPUT*/}
+            <TextInput placeholder={'Template Title:'} style={styles.templateTitle}
+                       onChangeText={(value) => setTitle(value)}/>
+            {/*DATA MAPPING*/}
             {
-                items.map((item, index)=>{
+                data.map((value, index) => {
                     return (
-                        <TouchableOpacity key={index} onPress={()=> eraseComponent(index)}>
-                            {item}
-                        </TouchableOpacity>
+                        <View style={tailwind('flex-row justify-between')}>
+                            {/*// @ts-ignore*/}
+                            <RenderCheckbox text={value.subtitle} index={index}/>
+                            <TouchableOpacity onPress={() => deleteComponent({index: index})}>
+                                {close_icon}
+                            </TouchableOpacity>
+                        </View>
                     )
                 })
             }
-            {/*Add button*/}
-            <View style={tailwind('items-center w-full py-4')}>
-                <View style={tailwind('w-3/6')}>
-                    <Button title={"+"} color={'#ff005f'}
-                            onPress={() => setModalVisible(true)}
-                    />
-                </View>
-
+            {/*ADD COMPONENT*/}
+            <View>
+                <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+                    <Text style={tailwind('text-4xl text-white')}>+</Text>
+                </TouchableOpacity>
+                {/*SAVE*/}
+                <TouchableOpacity style={styles.saveButton} onPress={() => saveData()}>
+                    <Text style={tailwind('text-4xl text-white')}>SAVE</Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                style={tailwind('m-2 flex-row items-center px-2 py-1 border border-gray-400 rounded-md')}
-                onPress={() => { // @ts-ignore
-                    setComponent(CheckBox);
-                    handleAdd();
-                }}
-            >
-                {checkBox_icon}
-                <Text style={tailwind('text-3xl px-2 text-gray-600')}>Add CheckBox</Text>
-            </TouchableOpacity>
-        </SafeAreaView>
-    </>
+
+            {/*MODAL*/}
+            <AddComponentModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                name={name}
+                setName={setName}
+                addComponent={addComponent}
+            />
+
+        </View>
+    )
 };
-
-//STYLES\\
-
-//Tailwind Styled variables
-
 
 //Js Styles
 const styles = StyleSheet.create({
-    modalScreen: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    container: {
+        height: '100%',
+        justifyContent: 'space-between'
     },
-    modal: {
-        width: '90%',
-        backgroundColor: 'white',
-        borderRadius: 15
+    templateTitle: {
+        height: 60,
+        marginLeft: 2,
+        fontSize: 40,
+        color: '#ff005f'
     },
     closeIcon: {
         fontSize: 50,
         color: '#ff005f',
+        marginRight: 5
+    },
+    addButton: {
+        marginLeft: '30%',
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 17,
+        width: '40%',
+        height: 50,
+        backgroundColor: '#ff005f'
+    },
+    saveButton: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopRightRadius: 17,
+        width: '30%',
+        height: 50,
+        color: '#ff005f',
+        backgroundColor: 'black'
     }
 });
-
 //Icons
-
-const checkbox = <McIcons name={'checkbox-blank-outline'} style={tailwind('text-gray-500 text-3xl')}/>
-const description = <McIcons name={'card-text-outline'} style={[styles.closeIcon]}/>
-const close_icon = <FaIcons name={'window-close'} style={[styles.closeIcon, tailwind('text-right bottom-1')]}/>
-const checkBox_icon = <McIcons name={'checkbox-multiple-marked-outline'} style={[styles.closeIcon]}/>
+const close_icon = <FaIcons name={'window-close'} style={styles.closeIcon}/>

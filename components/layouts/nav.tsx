@@ -25,7 +25,6 @@ export default function Nav({children}: { children: any }) {
                         <Text style={menuOptions}>Opcion 2</Text>
                         <Text style={menuOptions}>Opcion 3</Text>
                     </View>
-
                 </View>
             </Modal>
 

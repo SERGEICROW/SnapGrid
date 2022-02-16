@@ -4,16 +4,15 @@ import tailwind from "tailwind-rn";
 import McIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FIcons from 'react-native-vector-icons/Foundation';
 import Nav from "../components/layouts/nav";
-import {Component} from "react";
 
 
-export default function Main_S({navigation}:{navigation:any}) {
+export default function Main_S({navigation}: { navigation: any }) {
 
     return <Nav>
         <View style={menu}>
             <TouchableOpacity
                 style={touchable}
-                onPress={()=>navigation.navigate('Create')}
+                onPress={() => navigation.navigate('Create')}
             >
                 <View style={texts}>
                     <Text style={subTitle}>CREATE TEMPLATE</Text>
@@ -24,7 +23,10 @@ export default function Main_S({navigation}:{navigation:any}) {
 
             <View style={outlines}/>
 
-            <TouchableOpacity style={touchable}>
+            <TouchableOpacity
+                style={touchable}
+            onPress={()=> navigation.navigate('Compare_1')}
+            >
                 <View style={texts}>
                     <Text style={subTitle}>COMPARE</Text>
                     <Text style={description}>Start comparing whatever you want</Text>
