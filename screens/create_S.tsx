@@ -1,7 +1,7 @@
 //React
 import React, {useState} from "react";
 //React Native
-import {View, TextInput, Text, TouchableOpacity, StyleSheet} from "react-native";
+import {View, TextInput, Text, TouchableOpacity, StyleSheet, Button} from "react-native";
 //Libaries
 import tailwind from "tailwind-rn";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,7 +12,7 @@ import {AddComponentModal} from "../components/AddComponentModal";
 
 
 //MAIN FUNCTION\\
-export default function Create_S({navigation}:{navigation:any}) {
+export default function Create_S({navigation}: { navigation: any }) {
 
 //TEMPLATE DATA SECTION-------------------------------------------------------------------------------
     //HOOKS
@@ -20,7 +20,9 @@ export default function Create_S({navigation}:{navigation:any}) {
     const [name, setName] = useState(String);
     const [data, setData] = useState(Array);
     //VARIABLES & OBJECTS
-    //Main Parent template model Object, there is only one when created.
+    //Parent data container fot templates
+    const tData = {TDATA: []};
+    //Parent object model, to be inside of TDATA "template data"
     const template = {title: title, DATA: data as []};
     //Child component model Object, can be more than one, and each one is added to DATA array.
     const component = new Object({type: 'checkbox', subtitle: name, value: Boolean});
@@ -52,21 +54,46 @@ export default function Create_S({navigation}:{navigation:any}) {
 
 //DATA STORAGE SECTION----------------------------------------------------------------------------
     //Set data API
-    const setObjectValue = async (value: String) => {
-        let keys = []
+    const setInitialDatabase = async () => {
+        const keys = await AsyncStorage.getAllKeys()
+        let cont1 = false
         try {
-            const jsonValue = JSON.stringify(value)
-            keys = await AsyncStorage.getAllKeys();
-            await AsyncStorage.setItem(keys.length.toString(), jsonValue)
+            for (let i in keys) {
+                if (keys[i] === "templateData") {
+                    cont1 = true
+                    console.log('TEMPLATE DATA ALREADY EXISTS')
+                    break
+                }
+            }
+            if (!cont1) {
+                const jsonValue = JSON.stringify(tData)
+                await AsyncStorage.setItem('templateData', jsonValue)
+                console.log('TEMPLATE DATA CREATED')
+            }
         } catch (e) {
-            alert("Set error")
+            console.log("some error when creting the database")
         }
-        console.log('Done.')
     }
+
+    const setObjectValue = async (value) => {
+        try {
+            const stringValue = await AsyncStorage.getItem('templateData')
+            const ObjectValue = JSON.parse(stringValue)
+            const template = JSON.stringify(value)
+            ObjectValue.TDATA.push(template)
+            const stringObject = JSON.stringify(ObjectValue)
+            await AsyncStorage.setItem('templateData', stringObject)
+        } catch (e) {
+            console.log('some error while setting the obejct value')
+        }
+        console.log('done')
+    }
+
     //Saves the data and closes screen
     const saveData = () => {
         try {
-            if (title !== '' && data.length !== 0)  {
+            setInitialDatabase();
+            if (title !== '' && data.length !== 0) {
                 template.title = title
                 navigation.navigate('Main')
                 // @ts-ignore
@@ -78,6 +105,40 @@ export default function Create_S({navigation}:{navigation:any}) {
         } catch (e) {
             alert("Save error")
         }
+    }
+    const getMyObject = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('templateData')
+                return console.log(jsonValue != null ? JSON.parse(jsonValue) : null)
+            } catch(e) {
+                // read error
+            }
+
+            console.log('Done.')
+
+        }
+
+    const getAllKeys = async () => {
+        let keys = []
+        try {
+            keys = await AsyncStorage.getAllKeys()
+            if (keys.length === 0) {
+                console.log('NO KEYS DETECTED')
+            }
+{}        } catch (e) {
+            // read key error
+        }
+        console.log(keys)
+    }
+
+    const clearAll = async () => {
+        try {
+            await AsyncStorage.clear()
+        } catch (e) {
+            // clear error
+        }
+
+        console.log('Done.')
     }
 
 
@@ -106,6 +167,13 @@ export default function Create_S({navigation}:{navigation:any}) {
                 <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
                     <Text style={tailwind('text-4xl text-white')}>+</Text>
                 </TouchableOpacity>
+
+                <Button title={'set database'} onPress={() => setInitialDatabase()}/>
+                <Button title={'get my object'} onPress={() => getMyObject()}/>
+                <Button title={'get all keys'} onPress={() => getAllKeys()}/>
+                <Button title={'clear all'} onPress={() => clearAll()}/>
+                <Button title={'console'} onPress={() => console.log('que pedo')}/>
+
                 {/*SAVE*/}
                 <TouchableOpacity style={styles.saveButton} onPress={() => saveData()}>
                     <Text style={tailwind('text-4xl text-white')}>SAVE</Text>
