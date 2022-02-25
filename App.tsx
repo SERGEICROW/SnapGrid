@@ -17,8 +17,8 @@ export default function App() {
             <Stack.Navigator>
                 <Stack.Screen name={"Log/Sign"} component={Welcome_S} options={{headerShown:false}}/>
                 <Stack.Screen name={"Main"} component={Main_S} options={{headerShown:false}}/>
-                <Stack.Screen name={"Create"} component={Create_S} options={{}} />
-                <Stack.Screen name={"Compare_1"} component={Compare_S} options={{headerTitle:'Template List'}} />
+                <Stack.Screen name={"Create"} component={Create_S} options={{headerTitle: 'Menu'}} />
+                <Stack.Screen name={"Compare_1"} component={Compare_S} options={{headerTitle: 'Menu'}} />
             </Stack.Navigator>
         </NavigationContainer>
     );

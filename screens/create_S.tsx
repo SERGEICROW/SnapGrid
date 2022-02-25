@@ -106,40 +106,7 @@ export default function Create_S({navigation}: { navigation: any }) {
             alert("Save error")
         }
     }
-    const getMyObject = async () => {
-            try {
-                const jsonValue = await AsyncStorage.getItem('templateData')
-                return console.log(jsonValue != null ? JSON.parse(jsonValue) : null)
-            } catch(e) {
-                // read error
-            }
 
-            console.log('Done.')
-
-        }
-
-    const getAllKeys = async () => {
-        let keys = []
-        try {
-            keys = await AsyncStorage.getAllKeys()
-            if (keys.length === 0) {
-                console.log('NO KEYS DETECTED')
-            }
-{}        } catch (e) {
-            // read key error
-        }
-        console.log(keys)
-    }
-
-    const clearAll = async () => {
-        try {
-            await AsyncStorage.clear()
-        } catch (e) {
-            // clear error
-        }
-
-        console.log('Done.')
-    }
 
 
 //RETURN\\
@@ -167,12 +134,6 @@ export default function Create_S({navigation}: { navigation: any }) {
                 <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
                     <Text style={tailwind('text-4xl text-white')}>+</Text>
                 </TouchableOpacity>
-
-                <Button title={'set database'} onPress={() => setInitialDatabase()}/>
-                <Button title={'get my object'} onPress={() => getMyObject()}/>
-                <Button title={'get all keys'} onPress={() => getAllKeys()}/>
-                <Button title={'clear all'} onPress={() => clearAll()}/>
-                <Button title={'console'} onPress={() => console.log('que pedo')}/>
 
                 {/*SAVE*/}
                 <TouchableOpacity style={styles.saveButton} onPress={() => saveData()}>
