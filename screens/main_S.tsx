@@ -1,66 +1,82 @@
-import {FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+
 import tailwind from "tailwind-rn";
-import {Component} from "react";
+import McIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FIcons from 'react-native-vector-icons/Foundation';
+import Nav from "../components/layouts/nav";
 
-export default function Main_S() {
 
+export default function Main_S({navigation}: { navigation: any }) {
 
-    return <>
-        <View style={tailwind('h-full mt-9')}>
+    return <Nav>
+        <View style={menu}>
+            <TouchableOpacity
+                style={touchable}
+                onPress={() => navigation.navigate('Create')}
+            >
+                <View style={texts}>
+                    <Text style={subTitle}>CREATE TEMPLATE</Text>
+                    <Text style={description}>Create or edit your comparison templates</Text>
+                </View>
+                <View style={styles.iconContainter}>{new_t}</View>
+            </TouchableOpacity>
 
-            <View style={tailwind('border-b-2 flex-row items-center h-16')}>
-                <Image source={require('../assets/logo.png')} style={tailwind('w-14 h-14 mx-3')}/>
-                <Text style={tailwind('italic text-3xl text-gray-500')}>Snap Grid</Text>
-                <TouchableOpacity style={tailwind('absolute right-3')}>
-                    <Image source={require('../assets/favicon.png')}/>
-                </TouchableOpacity>
-            </View>
+            <View style={outlines}/>
 
-            <View style={tailwind('border border-pink-500 h-full justify-around pb-40 pt-8')}>
+            <TouchableOpacity
+                style={touchable}
+            onPress={()=> navigation.navigate('Compare_1')}
+            >
+                <View style={texts}>
+                    <Text style={subTitle}>COMPARE</Text>
+                    <Text style={description}>Start comparing whatever you want</Text>
+                </View>
+                <View style={styles.iconContainter}>
+                    {compare_1}
+                    {compare_2}
+                </View>
+            </TouchableOpacity>
 
-                <TouchableOpacity style={tailwind('border border-blue-300 flex-row items-center h-32')}>
-                    <Image source={require('../assets/favicon.png')}/>
-                    <Text style={tailwind('text-3xl')} >CREATE TEMPLATE</Text>
-                </TouchableOpacity>
+            <View style={outlines}/>
 
-                <View style={tailwind('border border-black')}/>
-
-                <TouchableOpacity style={tailwind('border border-blue-300 flex-row items-center h-32')}>
-                    <Image source={require('../assets/favicon.png')}/>
-                    <Text style={tailwind('text-3xl')} >COMPARE</Text>
-                </TouchableOpacity>
-
-                <View style={tailwind('border border-black')}/>
-
-                <TouchableOpacity style={tailwind('border border-blue-300 flex-row items-center h-32')}>
-                    <Image source={require('../assets/favicon.png')}/>
-                    <Text style={tailwind('text-3xl')} >OLD COMPARISONS</Text>
-                </TouchableOpacity>
-
-            </View>
-
+            <TouchableOpacity style={touchable}>
+                <View style={texts}>
+                    <Text style={subTitle}>OLD COMPARISONS</Text>
+                    <Text style={description}>Take a look to the data of your old comparisons</Text>
+                </View>
+                <View style={styles.iconContainter}>{old_c}</View>
+            </TouchableOpacity>
         </View>
-    </>
+    </Nav>
 };
 
 //STYLES\\
 
 //Tailwind Styled variables
-
+const touchable = tailwind('flex-row items-center h-32');
+const texts = tailwind('w-56 h-24 justify-center');
+const subTitle = tailwind('text-xl text-center text-gray-700');
+const description = tailwind('text-base text-center px-6 text-gray-400');
+const outlines = tailwind('border border-gray-300');
+const menu = tailwind('h-full justify-around pb-40 pt-8');
 
 //Js Styles
 const styles = StyleSheet.create({
-    container: {
+    icon: {
+        fontSize: 80,
+        color: '#ff005f',
+    },
+    iconContainter: {
         flex: 1,
-        borderWidth: 3,
-    },
-    item: {
-        backgroundColor: '#f9c2ff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
-    },
-});
+        flexDirection: 'row',
+        textAlign: 'center',
+        justifyContent: 'center'
+    }
+})
+
+//Icons
+const compare_1 = <McIcons name={'clipboard-arrow-right-outline'} style={{fontSize: 80, color: '#ff005f'}}/>
+const compare_2 = <McIcons name={'clipboard-arrow-left-outline'} style={{fontSize: 80, color: '#ff005f'}}/>
+const old_c = <McIcons name={'clipboard-text-multiple-outline'} style={styles.icon}/>
+const new_t = <FIcons name={'clipboard-pencil'} style={styles.icon}/>
+

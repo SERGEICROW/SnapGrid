@@ -1,28 +1,27 @@
-import {StatusBar} from 'expo-status-bar';
-import { NavigationContainer } from "@react-navigation/native";
 import {StyleSheet, Text, View} from 'react-native';
 import Welcome_S from "./screens/welcome_S";
+import {NavigationContainer} from "@react-navigation/native";
 import Main_S from "./screens/main_S";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import Create_S from "./screens/create_S";
+import Compare_S from "./screens/Compare_S";
+import tailwind from "tailwind-rn";
+
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+
     return (
-        // <NavigationContainer>
-        //     <View style={styles.container}>
-        //         <Text>Open up App.tsx to start working on your app!</Text>
-        //
-        //         <StatusBar style="auto"/>
-        //     </View>
-        // </NavigationContainer>
-        <Main_S/>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name={"Log/Sign"} component={Welcome_S} options={{headerShown:false}}/>
+                <Stack.Screen name={"Main"} component={Main_S} options={{headerShown:false}}/>
+                <Stack.Screen name={"Create"} component={Create_S} options={{headerTitle: 'Menu'}} />
+                <Stack.Screen name={"Compare_1"} component={Compare_S} options={{headerTitle: 'Menu'}} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
+};
 
-}
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
